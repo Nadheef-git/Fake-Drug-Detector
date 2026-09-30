@@ -44,5 +44,18 @@ production deployment without a re-collected, format-balanced dataset.
 - Source dataset has a known collection-process bias (documented above)
 - From-scratch CNN showed instability across runs without a fixed random seed
 
+  ## Additional Limitation: Real-World Distribution Shift
+
+Manual testing after deployment revealed the model produces unreliable
+predictions on photos taken directly with a phone camera, despite reasonable
+performance on the held-out test set. Investigation showed phone camera images,
+after resizing to the model's expected input size, carry a texture/sharpness
+signature far outside the range present in training data (which was sourced
+from stock images and screenshots, none exceeding ~1200px in original width).
+This is a distribution shift issue, distinct from the dataset leakage finding
+above: even a model with no leakage at all would need training data collected
+under conditions matching its real deployment use case (i.e., actual phone
+photos of packaging) to be reliable in practice.
+
 ## Tech Stack
 Python, TensorFlow/Keras, OpenCV, scikit-learn, pandas
